@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020617" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Крысиные бега – мир бедных</title>
+  <style>
+    :root {
+      --bg-body: #050816;
+      --bg-card: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.18);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      color: var(--text-main);
+    }
+    .wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1rem 1rem 1.75rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.35rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.03em;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.9rem;
+    }
+    h2 {
+      font-size: 0.95rem;
+      margin: 0 0 0.4rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.92));
+      border-radius: 16px;
+      padding: 0.85rem 0.9rem 0.8rem;
+      margin-bottom: 0.9rem;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.85),
+        0 0 0 1px rgba(148, 163, 184, 0.2);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      backdrop-filter: blur(16px);
+    }
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.1rem;
+    }
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    td {
+      padding: 0.24rem 0.2rem;
+      vertical-align: middle;
+    }
+    .label-cell {
+      width: 64%;
+      color: var(--text-muted);
+    }
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 0.38rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      background: radial-gradient(circle at top left, #020617, #020617 30%, #020617 100%);
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, transform 0.05s ease;
+    }
+    input[type="number"] {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    input[type="number"]::placeholder,
+    input[type="text"]::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top left, #020617, #020617 40%, #020617 100%);
+      transform: translateY(-0.5px);
+    }
+    .totals-table td {
+      padding: 0.3rem 0.25rem;
+    }
+    .totals-label {
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+    .totals-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.9rem;
+    }
+    .totals-value.negative {
+      color: var(--danger);
+    }
+    .totals-value.positive {
+      color: var(--success);
+    }
+    .cashflow-row {
+      border-top: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    .cashflow-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+    .cashflow-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .cashflow-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.12rem 0.55rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      font-size: 0.7rem;
+      color: var(--accent);
+      margin-left: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .section-note {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    @media (max-width: 600px) {
+      .wrapper { padding-inline: 0.75rem; }
+      h1 { font-size: 1.2rem; }
+      .card { border-radius: 14px; padding-inline: 0.75rem; }
+      td { padding-inline: 0.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>ИГРА «Крысиные бега» – мир бедных</h1>
+    <div class="subtitle">Финансовый трекер для партии игры на телефоне</div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Данные игрока</h2>
+        <div class="badge">профиль</div>
+      </div>
+      <table>
+        <tr><td class="label-cell">Имя игрока</td><td><input id="player-name" type="text" placeholder="Ваше имя"></td></tr>
+        <tr><td class="label-cell">Должность</td><td><input id="player-job" type="text" placeholder="Кто вы по жизни?"></td></tr>
+        <tr><td class="label-cell">Ваша мечта</td><td><input id="dream" type="text" placeholder="Например: дом у моря"></td></tr>
+        <tr><td class="label-cell">Её стоимость, $</td><td><input id="dream-cost" type="number" placeholder="500000"></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Доходы</h2>
+        <div class="badge">поступления</div>
+      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td class="label-cell">Зарплата (актив)</td>
+            <td><input type="number" class="income-active" placeholder="0"></td>
+          </tr>
+          <tr><td class="label-cell">Доходы от недвижимости 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от недвижимости 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от недвижимости 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от недвижимости 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от недвижимости 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 6 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 7 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от малого бизнеса 8 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Доходы от крупного бизнеса 6 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Расходы</h2>
+        <div class="badge">обязательные</div>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="label-cell">Квартплата</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Аренда жилья</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Кредит на квартиру</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на питание</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Кредит на автомобиль</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на обучение</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на тренинги</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на обновление гардероба</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на проезд/бензин</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на телефонные переговоры</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Количество детей (до трёх)</td><td><input type="number" id="children-count" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы на детей (за 1 ребёнка)</td><td><input type="number" class="expense-children" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Новые расходы 1</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Новые расходы 2</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Новые расходы 3</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Новые расходы 4</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+          <tr><td class="label-cell">Расходы по опеке</td><td><input type="number" class="expense" placeholder="0"></td></tr>
+        </tbody>
+      </table>
+      <div class="section-note">Расходы на детей считаются как: количество детей × расходы на одного ребёнка.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Акции</h2>
+        <div class="badge">портфель</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <td class="label-cell">Код бумаги</td>
+            <td>Кол-во</td>
+            <td>Цена покупки</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">УКТ</td>
+            <td><input type="number" id="stock-ukt-qty" placeholder="0"></td>
+            <td><input type="number" id="stock-ukt-price" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">КРС</td>
+            <td><input type="number" id="stock-krs-qty" placeholder="0"></td>
+            <td><input type="number" id="stock-krs-price" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">КЧГ</td>
+            <td><input type="number" id="stock-kchg-qty" placeholder="0"></td>
+            <td><input type="number" id="stock-kchg-price" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">ЯКЗ</td>
+            <td><input type="number" id="stock-yakz-qty" placeholder="0"></td>
+            <td><input type="number" id="stock-yakz-price" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">ДР</td>
+            <td><input type="number" id="stock-dr-qty" placeholder="0"></td>
+            <td><input type="number" id="stock-dr-price" placeholder="0"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="section-note">Этот блок повторяет таблицу акций с оригинального листа.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Кредиты</h2>
+        <div class="badge">обязательства</div>
+      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td class="label-cell">Дополнительно взятый кредит 1</td>
+            <td><input type="number" id="loan-extra-1" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Дополнительно взятый кредит 2</td>
+            <td><input type="number" id="loan-extra-2" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Дополнительно взятый кредит 3</td>
+            <td><input type="number" id="loan-extra-3" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Дополнительно взятый кредит 4</td>
+            <td><input type="number" id="loan-extra-4" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Проценты по новому кредиту 1 (ежемесячный платёж)</td>
+            <td><input type="number" class="expense" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Проценты по новому кредиту 2 (ежемесячный платёж)</td>
+            <td><input type="number" class="expense" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Проценты по новому кредиту 3 (ежемесячный платёж)</td>
+            <td><input type="number" class="expense" placeholder="0"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Проценты по новому кредиту 4 (ежемесячный платёж)</td>
+            <td><input type="number" class="expense" placeholder="0"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="section-note">Суммы дополнительных кредитов указаны как общий долг. Ежемесячные проценты автоматически учитываются в расходах.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-row">
+        <h2>Финансовый баланс</h2>
+        <div class="badge">итоги</div>
+      </div>
+      <table class="totals-table">
+        <tr>
+          <td class="totals-label">Активный доход:</td>
+          <td id="active-income" class="totals-value">0</td>
+        </tr>
+        <tr>
+          <td class="totals-label">Пассивный доход:</td>
+          <td id="passive-income" class="totals-value">0</td>
+        </tr>
+        <tr>
+          <td class="totals-label">Общий доход:</td>
+          <td id="total-income" class="totals-value">0</td>
+        </tr>
+        <tr>
+          <td class="totals-label">Общий расход:</td>
+          <td id="total-expenses" class="totals-value">0</td>
+        </tr>
+        <tr class="cashflow-row">
+          <td class="cashflow-label">
+            Итог (доход − расход)
+            <span class="cashflow-chip">cash flow</span>
+          </td>
+          <td id="cashflow" class="totals-value cashflow-value">0</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function sumBySelector(selector) {
+      return Array.from(document.querySelectorAll(selector)).reduce((acc, el) => {
+        const raw = (el.value || "").toString().replace(",", ".");
+        const v = parseFloat(raw);
+        return acc + (isNaN(v) ? 0 : v);
+      }, 0);
+    }
+    function formatNum(n) {
+      return n.toLocaleString("ru-RU", { maximumFractionDigits: 0 });
+    }
+    function recalc() {
+      const active = sumBySelector(".income-active");
+      const passive = sumBySelector(".income-passive");
+      const totalIncome = active + passive;
+      const childrenCountRaw = (document.getElementById("children-count").value || "0").toString().replace(",", ".");
+      const childrenCount = parseFloat(childrenCountRaw) || 0;
+      const childrenCost = sumBySelector(".expense-children");
+      const baseExpenses = sumBySelector(".expense");
+      const totalExpenses = baseExpenses + childrenCount * childrenCost;
+      const cf = totalIncome - totalExpenses;
+      const ai = document.getElementById("active-income");
+      const pi = document.getElementById("passive-income");
+      const ti = document.getElementById("total-income");
+      const te = document.getElementById("total-expenses");
+      const cfEl = document.getElementById("cashflow");
+      ai.textContent = formatNum(active);
+      pi.textContent = formatNum(passive);
+      ti.textContent = formatNum(totalIncome);
+      te.textContent = formatNum(totalExpenses);
+      cfEl.textContent = formatNum(cf);
+      cfEl.classList.remove("positive", "negative");
+      if (cf > 0) cfEl.classList.add("positive");
+      else if (cf < 0) cfEl.classList.add("negative");
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("input", recalc);
+      recalc();
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js").catch(err => {
+          console.warn("SW registration failed", err);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
