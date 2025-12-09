@@ -1,4 +1,4 @@
-const CACHE_NAME = 'krysinye-bega-v1';
+const CACHE_NAME = 'krysinye-bega-v2';
 
 const ASSETS = [
   './',
