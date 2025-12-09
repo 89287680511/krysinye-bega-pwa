@@ -111,16 +111,34 @@
       text-align: right;
       font-variant-numeric: tabular-nums;
     }
-    input[type="number"]::placeholder,
-    input[type="text"]::placeholder {
+    input::placeholder {
       color: rgba(148, 163, 184, 0.8);
     }
-    input[type="number"]:focus,
-    input[type="text"]:focus {
+    input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
       background: radial-gradient(circle at top left, #020617, #020617 40%, #020617 100%);
       transform: translateY(-0.5px);
+    }
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      padding: 0.6rem 0.7rem;
+      background: #020617;
+      color: var(--text-main);
+      resize: vertical;
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+    textarea::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
     }
     .totals-table td {
       padding: 0.3rem 0.25rem;
@@ -173,6 +191,50 @@
       color: var(--text-muted);
       margin-top: 0.25rem;
     }
+    .buttons-row {
+      margin-top: 0.6rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-reset {
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      background: transparent;
+      border: 1px solid rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+    .btn-reset:hover {
+      background: rgba(248, 113, 113, 0.15);
+    }
+    .tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+    }
+    .tab {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--text-muted);
+      padding: 0.35rem 0.2rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+    .screen { display: none; }
+    .screen-active { display: block; }
     @media (max-width: 600px) {
       .wrapper { padding-inline: 0.75rem; }
       h1 { font-size: 1.2rem; }
@@ -186,244 +248,403 @@
     <h1>ИГРА «Крысиные бега» – мир бедных</h1>
     <div class="subtitle">Финансовый трекер для партии игры на телефоне</div>
 
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Данные игрока</h2>
-        <div class="badge">профиль</div>
-      </div>
-      <table>
-        <tr><td class="label-cell">Имя игрока</td><td><input id="player-name" type="text" placeholder="Ваше имя"></td></tr>
-        <tr><td class="label-cell">Должность</td><td><input id="player-job" type="text" placeholder="Кто вы по жизни?"></td></tr>
-        <tr><td class="label-cell">Ваша мечта</td><td><input id="dream" type="text" placeholder="Например: дом у моря"></td></tr>
-        <tr><td class="label-cell">Её стоимость, $</td><td><input id="dream-cost" type="number" placeholder="500000"></td></tr>
-      </table>
+    <div class="tabs">
+      <button class="tab active" data-target="finance">Финансы</button>
+      <button class="tab" data-target="notes">Заметки</button>
     </div>
 
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Доходы</h2>
-        <div class="badge">поступления</div>
-      </div>
-      <table>
-        <tbody>
+    <!-- ЭКРАН 1: ФИНАНСЫ -->
+    <div id="screen-finance" class="screen screen-active">
+      <!-- Данные игрока -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Данные игрока</h2>
+          <div class="badge">профиль</div>
+        </div>
+        <table>
           <tr>
-            <td class="label-cell">Зарплата (актив)</td>
-            <td><input type="number" class="income-active" placeholder="0"></td>
+            <td class="label-cell">Имя игрока</td>
+            <td><input id="player-name" data-save type="text" placeholder="Ваше имя"></td>
           </tr>
-          <tr><td class="label-cell">Доходы от недвижимости 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от недвижимости 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от недвижимости 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от недвижимости 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от недвижимости 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 6 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 7 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от малого бизнеса 8 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 1 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 2 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 3 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 4 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 5 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Доходы от крупного бизнеса 6 (пассив)</td><td><input type="number" class="income-passive" placeholder="0"></td></tr>
-        </tbody>
-      </table>
+          <tr>
+            <td class="label-cell">Должность</td>
+            <td><input id="player-job" data-save type="text" placeholder="Кто вы по жизни?"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Ваша мечта</td>
+            <td><input id="dream" data-save type="text" placeholder="Например: дом у моря"></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Её стоимость, $</td>
+            <td><input id="dream-cost" data-save type="number" placeholder="500000"></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Финансовый баланс (перемещён сразу после данных игрока) -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Финансовый баланс</h2>
+          <div class="badge">итоги</div>
+        </div>
+        <table class="totals-table">
+          <tr>
+            <td class="totals-label">Активный доход:</td>
+            <td id="active-income" class="totals-value">0</td>
+          </tr>
+          <tr>
+            <td class="totals-label">Пассивный доход:</td>
+            <td id="passive-income" class="totals-value">0</td>
+          </tr>
+          <tr>
+            <td class="totals-label">Общий доход:</td>
+            <td id="total-income" class="totals-value">0</td>
+          </tr>
+          <tr>
+            <td class="totals-label">Общий расход:</td>
+            <td id="total-expenses" class="totals-value">0</td>
+          </tr>
+          <tr class="cashflow-row">
+            <td class="cashflow-label">
+              Итог (доход − расход)
+              <span class="cashflow-chip">cash flow</span>
+            </td>
+            <td id="cashflow" class="totals-value cashflow-value">0</td>
+          </tr>
+        </table>
+        <div class="buttons-row">
+          <button id="reset-btn" class="btn-reset">Сбросить всё</button>
+        </div>
+      </div>
+
+      <!-- Доходы -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Доходы</h2>
+          <div class="badge">поступления</div>
+        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td class="label-cell">Зарплата (актив)</td>
+              <td><input id="income-salary" data-save type="number" class="income-active" placeholder="0"></td>
+            </tr>
+
+            <!-- Недвижимость -->
+            <tr><td class="label-cell">Доходы от недвижимости 1 (пассив)</td>
+              <td><input id="income-real-1" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от недвижимости 2 (пассив)</td>
+              <td><input id="income-real-2" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от недвижимости 3 (пассив)</td>
+              <td><input id="income-real-3" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от недвижимости 4 (пассив)</td>
+              <td><input id="income-real-4" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от недвижимости 5 (пассив)</td>
+              <td><input id="income-real-5" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+
+            <!-- Малый бизнес -->
+            <tr><td class="label-cell">Доходы от малого бизнеса 1 (пассив)</td>
+              <td><input id="income-small-1" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 2 (пассив)</td>
+              <td><input id="income-small-2" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 3 (пассив)</td>
+              <td><input id="income-small-3" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 4 (пассив)</td>
+              <td><input id="income-small-4" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 5 (пассив)</td>
+              <td><input id="income-small-5" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 6 (пассив)</td>
+              <td><input id="income-small-6" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 7 (пассив)</td>
+              <td><input id="income-small-7" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от малого бизнеса 8 (пассив)</td>
+              <td><input id="income-small-8" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+
+            <!-- Крупный бизнес -->
+            <tr><td class="label-cell">Доходы от крупного бизнеса 1 (пассив)</td>
+              <td><input id="income-big-1" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от крупного бизнеса 2 (пассив)</td>
+              <td><input id="income-big-2" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от крупного бизнеса 3 (пассив)</td>
+              <td><input id="income-big-3" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от крупного бизнеса 4 (пассив)</td>
+              <td><input id="income-big-4" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от крупного бизнеса 5 (пассив)</td>
+              <td><input id="income-big-5" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Доходы от крупного бизнеса 6 (пассив)</td>
+              <td><input id="income-big-6" data-save type="number" class="income-passive" placeholder="0"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Расходы -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Расходы</h2>
+          <div class="badge">обязательные</div>
+        </div>
+        <table>
+          <tbody>
+            <tr><td class="label-cell">Квартплата</td>
+              <td><input id="exp-rent-1" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Аренда жилья</td>
+              <td><input id="exp-rent-2" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Кредит на квартиру</td>
+              <td><input id="exp-mortgage" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на питание</td>
+              <td><input id="exp-food" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Кредит на автомобиль</td>
+              <td><input id="exp-car" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на обучение</td>
+              <td><input id="exp-edu" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на тренинги</td>
+              <td><input id="exp-train" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на обновление гардероба</td>
+              <td><input id="exp-clothes" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на проезд/бензин</td>
+              <td><input id="exp-transport" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на телефонные переговоры</td>
+              <td><input id="exp-phone" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Количество детей (до трёх)</td>
+              <td><input id="children-count" data-save type="number" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы на детей (за 1 ребёнка)</td>
+              <td><input id="exp-children" data-save type="number" class="expense-children" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Новые расходы 1</td>
+              <td><input id="exp-new-1" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Новые расходы 2</td>
+              <td><input id="exp-new-2" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Новые расходы 3</td>
+              <td><input id="exp-new-3" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Новые расходы 4</td>
+              <td><input id="exp-new-4" data-save type="number" class="expense" placeholder="0"></td></tr>
+            <tr><td class="label-cell">Расходы по опеке</td>
+              <td><input id="exp-guard" data-save type="number" class="expense" placeholder="0"></td></tr>
+          </tbody>
+        </table>
+        <div class="section-note">Расходы на детей считаются как: количество детей × расходы на одного ребёнка.</div>
+      </div>
+
+      <!-- Акции -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Акции</h2>
+          <div class="badge">портфель</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <td class="label-cell">Код бумаги</td>
+              <td>Кол-во</td>
+              <td>Цена покупки</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label-cell">УКТ</td>
+              <td><input id="stock-ukt-qty" data-save type="number" placeholder="0"></td>
+              <td><input id="stock-ukt-price" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">КРС</td>
+              <td><input id="stock-krs-qty" data-save type="number" placeholder="0"></td>
+              <td><input id="stock-krs-price" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">КЧГ</td>
+              <td><input id="stock-kchg-qty" data-save type="number" placeholder="0"></td>
+              <td><input id="stock-kchg-price" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">ЯКЗ</td>
+              <td><input id="stock-yakz-qty" data-save type="number" placeholder="0"></td>
+              <td><input id="stock-yakz-price" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">ДР</td>
+              <td><input id="stock-dr-qty" data-save type="number" placeholder="0"></td>
+              <td><input id="stock-dr-price" data-save type="number" placeholder="0"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="section-note">Этот блок повторяет таблицу акций с оригинального листа.</div>
+      </div>
+
+      <!-- Кредиты -->
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Кредиты</h2>
+          <div class="badge">обязательства</div>
+        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td class="label-cell">Дополнительно взятый кредит 1</td>
+              <td><input id="loan-extra-1" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Дополнительно взятый кредит 2</td>
+              <td><input id="loan-extra-2" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Дополнительно взятый кредит 3</td>
+              <td><input id="loan-extra-3" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Дополнительно взятый кредит 4</td>
+              <td><input id="loan-extra-4" data-save type="number" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Проценты по новому кредиту 1 (ежемесячный платёж)</td>
+              <td><input id="exp-loan-int-1" data-save type="number" class="expense" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Проценты по новому кредиту 2 (ежемесячный платёж)</td>
+              <td><input id="exp-loan-int-2" data-save type="number" class="expense" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Проценты по новому кредиту 3 (ежемесячный платёж)</td>
+              <td><input id="exp-loan-int-3" data-save type="number" class="expense" placeholder="0"></td>
+            </tr>
+            <tr>
+              <td class="label-cell">Проценты по новому кредиту 4 (ежемесячный платёж)</td>
+              <td><input id="exp-loan-int-4" data-save type="number" class="expense" placeholder="0"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="section-note">Суммы дополнительных кредитов указаны как общий долг. Ежемесячные проценты автоматически учитываются в расходах.</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Расходы</h2>
-        <div class="badge">обязательные</div>
+    <!-- ЭКРАН 2: ЗАМЕТКИ -->
+    <div id="screen-notes" class="screen">
+      <div class="card">
+        <div class="card-header-row">
+          <h2>Заметки по партии</h2>
+          <div class="badge">для игры</div>
+        </div>
+        <textarea
+          id="notes-text"
+          data-save
+          placeholder="Здесь можно фиксировать события, сделки, ходы, эмоции игроков и итоги партии..."
+        ></textarea>
+        <div class="section-note">
+          Заметки сохраняются только локально на этом устройстве (localStorage) и никуда не отправляются.
+        </div>
       </div>
-      <table>
-        <tbody>
-          <tr><td class="label-cell">Квартплата</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Аренда жилья</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Кредит на квартиру</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на питание</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Кредит на автомобиль</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на обучение</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на тренинги</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на обновление гардероба</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на проезд/бензин</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на телефонные переговоры</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Количество детей (до трёх)</td><td><input type="number" id="children-count" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы на детей (за 1 ребёнка)</td><td><input type="number" class="expense-children" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Новые расходы 1</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Новые расходы 2</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Новые расходы 3</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Новые расходы 4</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-          <tr><td class="label-cell">Расходы по опеке</td><td><input type="number" class="expense" placeholder="0"></td></tr>
-        </tbody>
-      </table>
-      <div class="section-note">Расходы на детей считаются как: количество детей × расходы на одного ребёнка.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Акции</h2>
-        <div class="badge">портфель</div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <td class="label-cell">Код бумаги</td>
-            <td>Кол-во</td>
-            <td>Цена покупки</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="label-cell">УКТ</td>
-            <td><input type="number" id="stock-ukt-qty" placeholder="0"></td>
-            <td><input type="number" id="stock-ukt-price" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">КРС</td>
-            <td><input type="number" id="stock-krs-qty" placeholder="0"></td>
-            <td><input type="number" id="stock-krs-price" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">КЧГ</td>
-            <td><input type="number" id="stock-kchg-qty" placeholder="0"></td>
-            <td><input type="number" id="stock-kchg-price" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">ЯКЗ</td>
-            <td><input type="number" id="stock-yakz-qty" placeholder="0"></td>
-            <td><input type="number" id="stock-yakz-price" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">ДР</td>
-            <td><input type="number" id="stock-dr-qty" placeholder="0"></td>
-            <td><input type="number" id="stock-dr-price" placeholder="0"></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="section-note">Этот блок повторяет таблицу акций с оригинального листа.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Кредиты</h2>
-        <div class="badge">обязательства</div>
-      </div>
-      <table>
-        <tbody>
-          <tr>
-            <td class="label-cell">Дополнительно взятый кредит 1</td>
-            <td><input type="number" id="loan-extra-1" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Дополнительно взятый кредит 2</td>
-            <td><input type="number" id="loan-extra-2" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Дополнительно взятый кредит 3</td>
-            <td><input type="number" id="loan-extra-3" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Дополнительно взятый кредит 4</td>
-            <td><input type="number" id="loan-extra-4" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Проценты по новому кредиту 1 (ежемесячный платёж)</td>
-            <td><input type="number" class="expense" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Проценты по новому кредиту 2 (ежемесячный платёж)</td>
-            <td><input type="number" class="expense" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Проценты по новому кредиту 3 (ежемесячный платёж)</td>
-            <td><input type="number" class="expense" placeholder="0"></td>
-          </tr>
-          <tr>
-            <td class="label-cell">Проценты по новому кредиту 4 (ежемесячный платёж)</td>
-            <td><input type="number" class="expense" placeholder="0"></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="section-note">Суммы дополнительных кредитов указаны как общий долг. Ежемесячные проценты автоматически учитываются в расходах.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header-row">
-        <h2>Финансовый баланс</h2>
-        <div class="badge">итоги</div>
-      </div>
-      <table class="totals-table">
-        <tr>
-          <td class="totals-label">Активный доход:</td>
-          <td id="active-income" class="totals-value">0</td>
-        </tr>
-        <tr>
-          <td class="totals-label">Пассивный доход:</td>
-          <td id="passive-income" class="totals-value">0</td>
-        </tr>
-        <tr>
-          <td class="totals-label">Общий доход:</td>
-          <td id="total-income" class="totals-value">0</td>
-        </tr>
-        <tr>
-          <td class="totals-label">Общий расход:</td>
-          <td id="total-expenses" class="totals-value">0</td>
-        </tr>
-        <tr class="cashflow-row">
-          <td class="cashflow-label">
-            Итог (доход − расход)
-            <span class="cashflow-chip">cash flow</span>
-          </td>
-          <td id="cashflow" class="totals-value cashflow-value">0</td>
-        </tr>
-      </table>
     </div>
   </div>
 
   <script>
+    const STORAGE_KEY = 'krysinye_bega_state_v1';
+
     function sumBySelector(selector) {
       return Array.from(document.querySelectorAll(selector)).reduce((acc, el) => {
-        const raw = (el.value || "").toString().replace(",", ".");
+        const raw = (el.value || '').toString().replace(',', '.');
         const v = parseFloat(raw);
         return acc + (isNaN(v) ? 0 : v);
       }, 0);
     }
+
     function formatNum(n) {
-      return n.toLocaleString("ru-RU", { maximumFractionDigits: 0 });
+      return n.toLocaleString('ru-RU', { maximumFractionDigits: 0 });
     }
+
+    function saveState() {
+      const data = {};
+      document.querySelectorAll('[data-save]').forEach(el => {
+        if (!el.id) return;
+        data[el.id] = el.value;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        Object.entries(data).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (el) el.value = value;
+        });
+      } catch (e) {
+        console.warn('Не удалось загрузить сохранённое состояние', e);
+      }
+    }
+
     function recalc() {
-      const active = sumBySelector(".income-active");
-      const passive = sumBySelector(".income-passive");
+      const active = sumBySelector('.income-active');
+      const passive = sumBySelector('.income-passive');
       const totalIncome = active + passive;
-      const childrenCountRaw = (document.getElementById("children-count").value || "0").toString().replace(",", ".");
+
+      const childrenCountRaw = (document.getElementById('children-count')?.value || '0').toString().replace(',', '.');
       const childrenCount = parseFloat(childrenCountRaw) || 0;
-      const childrenCost = sumBySelector(".expense-children");
-      const baseExpenses = sumBySelector(".expense");
+      const childrenCost = sumBySelector('.expense-children');
+
+      const baseExpenses = sumBySelector('.expense');
       const totalExpenses = baseExpenses + childrenCount * childrenCost;
       const cf = totalIncome - totalExpenses;
-      const ai = document.getElementById("active-income");
-      const pi = document.getElementById("passive-income");
-      const ti = document.getElementById("total-income");
-      const te = document.getElementById("total-expenses");
-      const cfEl = document.getElementById("cashflow");
+
+      const ai = document.getElementById('active-income');
+      const pi = document.getElementById('passive-income');
+      const ti = document.getElementById('total-income');
+      const te = document.getElementById('total-expenses');
+      const cfEl = document.getElementById('cashflow');
+
       ai.textContent = formatNum(active);
       pi.textContent = formatNum(passive);
       ti.textContent = formatNum(totalIncome);
       te.textContent = formatNum(totalExpenses);
       cfEl.textContent = formatNum(cf);
-      cfEl.classList.remove("positive", "negative");
-      if (cf > 0) cfEl.classList.add("positive");
-      else if (cf < 0) cfEl.classList.add("negative");
+
+      cfEl.classList.remove('positive', 'negative');
+      if (cf > 0) cfEl.classList.add('positive');
+      else if (cf < 0) cfEl.classList.add('negative');
     }
-    document.addEventListener("DOMContentLoaded", () => {
-      document.addEventListener("input", recalc);
+
+    function resetAll() {
+      document.querySelectorAll('input[data-save], textarea[data-save]').forEach(el => {
+        el.value = '';
+      });
+      localStorage.removeItem(STORAGE_KEY);
       recalc();
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("service-worker.js").catch(err => {
-          console.warn("SW registration failed", err);
+    }
+
+    function initTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      const screens = document.querySelectorAll('.screen');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.target;
+          tabs.forEach(t => t.classList.toggle('active', t === tab));
+          screens.forEach(s => s.classList.toggle('screen-active', s.id === 'screen-' + target));
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      recalc();
+
+      document.addEventListener('input', () => {
+        recalc();
+        saveState();
+      });
+
+      const resetBtn = document.getElementById('reset-btn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          resetAll();
+          saveState();
+        });
+      }
+
+      initTabs();
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js').catch(err => {
+          console.warn('SW registration failed', err);
         });
       }
     });
